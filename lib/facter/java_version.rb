@@ -26,9 +26,14 @@ Facter.add(:java_version) do
       if Facter::Util::Resolution.which('java')
         case Facter.value(:operatingsystemmajrelease)
         when '4'
-          Facter::Util::Resolution.exec('java -version 2>&1').lines.first.split(/"/)[1].strip
+          Facter::Util::Resolution.exec('java -version 2>&1').lines.first.split(%r{"})[1].strip
         else
-          Facter::Util::Resolution.exec('java -Xmx12m -version 2>&1').lines.each { |line| version = $LAST_MATCH_INFO[1] if %r{^.+ version \"(.+)\"$} =~ line }
+          Facter::Util::Resolution.exec('java -Xmx12m -version 2>&1').lines.each do |line|
+            if %r{^.+ version \"(.+)\"$} =~ line
+              version = $LAST_MATCH_INFO[1]
+            end
+          end
+        end
       end
       version
     end

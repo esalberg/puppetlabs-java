@@ -29,6 +29,7 @@ Facter.add(:java_version) do
           Facter::Util::Resolution.exec('java -version 2>&1').lines.first.split(/"/)[1].strip
         else
           Facter::Util::Resolution.exec('java -Xmx12m -version 2>&1').lines.each { |line| version = $LAST_MATCH_INFO[1] if %r{^.+ version \"(.+)\"$} =~ line }
+        end
       end
       version
     end

@@ -93,6 +93,37 @@ describe 'java::oracle', type: :define do
 
       it { is_expected.to contain_archive('/tmp/jdk-8u131-linux-x64.rpm').with_source('http://download.oracle.com/otn-pub/java/jdk//8u131-b11/abcdef01234567890/jdk-8u131-linux-x64.rpm') }
     end
+
+    context 'when specifying package_type tar.gz and basedir' do
+      let(:params) do
+        {
+          ensure: 'present',
+          version: '6',
+          java_se: 'jdk',
+          basedir: '/usr/java',
+          package_type: 'tar.gz',
+        }
+      end
+      let(:title) { 'jdk6' }
+
+      it { is_expected.to contain_archive('/tmp/jdk-6u45-linux-x64.tar.gz') }
+      it { is_expected.to contain_exec('Install Oracle java_se jdk 6').with_command('tar -zxf /tmp/jdk-6u45-linux-x64.tar.gz -C /usr/java') }
+      it { is_expected.to contain_exec('Install Oracle java_se jdk 6').that_requires('Archive[/tmp/jdk-6u45-linux-x64.tar.gz]') }
+    end
+    context 'when basedir_manage is set to true' do
+      let(:params) do
+        {
+          ensure: 'present',
+          version: '6',
+          java_se: 'jdk',
+          basedir: '/usr/java',
+          basedir_manage: true,
+        }
+      end
+      let(:title) { 'jdk6' }
+
+      it { is_expected.to contain_file('/usr/java') }
+    end
   end
 
   context 'when on CentOS 32-bit' do

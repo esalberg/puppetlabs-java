@@ -19,6 +19,7 @@
 #
 # @param version
 #   Version of Java to install, e.g. '7' or '8'. Default values for major and minor versions will be used.
+#   For openjdk: use full version, e.g. 11.0.2
 #
 # @param version_major
 #   Major version which should be installed, e.g. '8u101'. Must be used together with version_minor.
@@ -158,10 +159,11 @@ define java::oracle (
         $release_hash  = '42970487e3af4f5aa5bca3f542482c60'
       }
       default : {
-        $release_major = '8u201'
-        $release_minor = 'b09'
-        $install_path = "${java_se}1.8.0_201"
-        $release_hash  = '42970487e3af4f5aa5bca3f542482c60'
+        # Allows openjdk tarball installs
+        $release_major = $version
+        $release_minor = undef
+        $install_path  = "${java_se}-${version}"
+        $release_hash  = undef
       }
     }
   }
